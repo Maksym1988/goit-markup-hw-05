@@ -8,6 +8,7 @@
   --success: #31d0aa;
   --subtle-text: #8e8f99;
   --white: #ffffff;
+  --trs-time: 250ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 body {
@@ -109,14 +110,25 @@ img {
 }
 
 .list-nav .link {
+  position: relative;
   font-weight: 500;
   color: var(--dark);
+  transition: color var(--trs-time);
 }
 
-.list-nav .link:hover,
-.list-nav .link:focus,
-.list-nav .link.current {
+.list-nav .link:is(:hover, :focus, .current) {
   color: var(--pressed-state);
+}
+
+.current::after {
+  content: '';
+  position: absolute;
+  bottom: -28px;
+  display: block;
+  width: 100%;
+  height: 4px;
+  background: var(--pressed-state);
+  border-radius: 2px;
 }
 
 /* ---------------- CONTACTS ---------------- */
@@ -132,10 +144,10 @@ img {
 
 .contacts .link {
   color: var(--text);
+  transition: color var(--trs-time);
 }
 
-.contacts .link:hover,
-.contacts .link:focus {
+.contacts .link:is(:hover, :focus) {
   color: var(--pressed-state);
 }
 
@@ -227,10 +239,10 @@ img {
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.15);
   border-radius: 4px;
   border-style: none;
+  transition: background-color var(--trs-time);
 }
 
-.btn-hero:hover,
-.btn-hero:focus {
+.btn-hero:is(:hover, :focus) {
   background-color: var(--pressed-state);
 }
 
@@ -298,6 +310,7 @@ img {
   justify-content: center;
   align-items: center;
   background-color: var(--primary-brand);
+  transition: background-color var(--trs-time);
 }
 
 .item-team-link:is(:hover, :focus) {
@@ -325,6 +338,7 @@ img {
   border: 1px solid var(--subtle-text);
   border-radius: 4px;
   color: var(--subtle-text);
+  transition: border-color var(--trs-time), color var(--trs-time);
 }
 
 .customers-link:is(:hover, :focus) {
@@ -350,6 +364,8 @@ img {
   color: var(--primary-brand);
   border: 1px solid var(--accent);
   border-radius: 4px;
+  transition: background-color var(--trs-time), color var(--trs-time),
+    box-shadow var(--trs-time);
 }
 
 .btn:is(:hover, :focus) {
@@ -365,10 +381,6 @@ img {
 .project {
   padding-top: 96px;
   padding-bottom: 120px;
-}
-
-.project-text {
-  color: var(--text);
 }
 
 .list-project {
@@ -389,17 +401,44 @@ img {
   display: block;
 }
 
+.project-cover-wrap {
+  position: relative;
+  overflow: hidden;
+}
+
+.project-cover-text {
+  position: absolute;
+  top: 0;
+  padding: 40px 32px;
+  height: 100%;
+  transform: translateY(100%);
+  color: var(--light);
+  background: var(--primary-brand);
+  background-blend-mode: soft-light;
+  mix-blend-mode: normal;
+  transition: transform var(--trs-time);
+}
+
+.project-link:is(:hover, :focus) .project-cover-text {
+  transform: translateY(0);
+}
+
 .project-content {
   padding: 32px 16px;
   border: 1px solid var(--accent);
   box-shadow: 0px 1px 6px rgba(46, 47, 66, 0.08);
   border-top: none;
+  transition: box-shadow var(--trs-time);
 }
 
 .project-link:is(:hover, :focus) .project-content {
   box-shadow: 0px 1px 6px rgba(46, 47, 66, 0.08),
     0px 1px 1px rgba(46, 47, 66, 0.16), 0px 2px 1px rgba(46, 47, 66, 0.08);
   border-top: none;
+}
+
+.project-text {
+  color: var(--text);
 }
 
 /* ---------------- FOOTER ----------------- */
@@ -453,8 +492,67 @@ img {
   justify-content: center;
   align-items: center;
   background-color: rgba(255, 255, 255, 0.1);
+  transition: background-color var(--trs-time);
 }
 
 .item-footer-link:is(:hover, :focus) {
   background-color: var(--success);
+}
+
+/* --------------- BACKDROP --------------- */
+
+.backdrop.is-hidden {
+  visibility: hidden;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.backdrop {
+  position: fixed;
+  z-index: 100;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  background: rgba(46, 47, 66, 0.4);
+  transition: opacity var(--trs-time), visibility var(--trs-time);
+}
+
+.modal {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 408px;
+  min-height: 576px;
+  transform: translate(-50%, -50%) scale(1);
+  padding: 24px;
+  background: #fcfcfc;
+  box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.14), 0px 1px 3px rgba(0, 0, 0, 0.12),
+    0px 2px 1px rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
+  transition: transform var(--trs-time);
+}
+
+.backdrop.is-hidden .modal {
+  transform: translate(-50%, -50%) scale(0);
+}
+
+.btn-close {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-left: auto;
+  background: var(--accent);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  transition: fill var(--trs-time), background var(--trs-time),
+    border-radius var(--trs-time);
+}
+
+.btn-close:focus {
+  fill: var(--white);
+  background: var(--pressed-state);
+  border-radius: 4px;
 }
